@@ -1,1 +1,1 @@
-# Network-Slice-Selection-Function---USER GUIDE
+# Network Slice Selection Function USER GUIDE
