@@ -22,8 +22,8 @@ The following Flow chart, shows the Attach/Reattach procedure of the NSSF
 
 2. Once the NSSF has the UE information, it verifies with its local Connection Database, if the UE has already being served. (The local connection database will have the information of the UE as long as this one haven't disconnected from the network).
 
-  - **2.a** From this point 2 things can happen. If the UE information is not in the local Database, it means that we are working in the Attach Procedure, for which we need to forward the UE connection information that we receive to the MME to handle the connection, after doing this, the MME will reply with updated connection information (Required for the **Temporary Id**) or will not allow the connection (Based on its own policies)
-  - **2.b** If the User equipment information was already inside the Local Connection Database it means that we are working with a Reattach procedure, for which we do not need to send any request to the MME and we proceed directly to the **Network Slice Selection**.
+   - **2.a** From this point 2 things can happen. If the UE information is not in the local Database, it means that we are working in the Attach Procedure, for which we need to forward the UE connection information that we receive to the MME to handle the connection, after doing this, the MME will reply with updated connection information (Required for the **Temporary Id**) or will not allow the connection (Based on its own policies)
+   - **2.b** If the User equipment information was already inside the Local Connection Database it means that we are working with a Reattach procedure, for which we do not need to send any request to the MME and we proceed directly to the **Network Slice Selection**.
 
 3. When the MME reply our attach request, we add in our Local Connection Database, the UE Id that is registered in the connection.
 
