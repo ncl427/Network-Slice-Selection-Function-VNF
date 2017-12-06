@@ -1,0 +1,26 @@
+2017-12-06T15:30:36 (17712) opening storage u'1' using FileStorage
+2017-12-06T15:30:36 (17712) opening storage u'2' using FileStorage
+2017-12-06T15:30:36 StorageServer created RW with storages: 1:RW:Slices.fs, 2:RW:NSSFTable.fs
+2017-12-06T15:30:36 listening on (u'localhost', 8090)
+2017-12-06T15:36:24 (17592) opening storage u'1' using FileStorage
+2017-12-06T15:36:24 Ignoring index for C:\Users\final\Documents\JEJU UNIVERSITY MASTER\Documentos Lab\TASK 3 Programming\src\Database\Slices.fs
+2017-12-06T15:36:24 (17592) opening storage u'2' using FileStorage
+2017-12-06T15:36:24 Ignoring index for C:\Users\final\Documents\JEJU UNIVERSITY MASTER\Documentos Lab\TASK 3 Programming\src\Database\NSSFTable.fs
+2017-12-06T15:36:24 StorageServer created RW with storages: 1:RW:Slices.fs, 2:RW:NSSFTable.fs
+2017-12-06T15:36:24 listening on (u'localhost', 8090)
+2017-12-06T15:36:33 Connected server protocol
+2017-12-06T15:36:33 received handshake 'Z5'
+2017-12-06T15:36:33 Connected server protocol
+2017-12-06T15:36:33 received handshake 'Z5'
+2017-12-06T15:37:08 Connected server protocol
+2017-12-06T15:37:08 received handshake 'Z5'
+2017-12-06T15:37:08 Connected server protocol
+2017-12-06T15:37:08 received handshake 'Z5'
+2017-12-06T15:38:19 Disconnected ConnectionResetError:[Errno 10054] An existing connection was forcibly closed by the remote host
+2017-12-06T15:38:19 (localhost:8090) disconnected
+2017-12-06T15:38:19 Disconnected ConnectionResetError:[Errno 10054] An existing connection was forcibly closed by the remote host
+2017-12-06T15:38:19 (localhost:8090) disconnected
+2017-12-06T15:38:19 Disconnected ConnectionResetError:[Errno 10054] An existing connection was forcibly closed by the remote host
+2017-12-06T15:38:19 (localhost:8090) disconnected
+2017-12-06T15:38:19 Disconnected ConnectionResetError:[Errno 10054] An existing connection was forcibly closed by the remote host
+2017-12-06T15:38:19 (localhost:8090) disconnected
