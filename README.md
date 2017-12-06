@@ -4,21 +4,21 @@ A Network Slice Selection Function is in charge of making the selection of an ap
 
 ## Description
 The **NSSF** is part of the 3gpp solution for having E2E slicing in a Mobile Network. According to documentation,
-the **NSSF** sits between the **RAN** and the **MME** and it is present mainly in the Attach and Detach procedures of a 5G mobile network.
+the **NSSF** sits between the **vBBU** and the **MME** and it is present mainly in the Attach and Detach procedures of a 5G mobile network.
 According to **3gpp** documentation during Session Establishment the NSSF will be involved in Reselection of a Network Slice only if, the Network Configuration changed. Because of this is not part of the scope of our project, Slice reselection is not included in the functionality.
 
 The current functionality present in the code is:
 - Assign a Network Slice during Network Attach/Reattach procedure
 - Erase UE slice assignation during the Network Detach procedure
 
-It is important to make clear, the NSSF is not in charge of doing the Attach/Reattach procedure, it only passes the information received from **RAN** to the **MME**, and once the UE is allowed to have connection will assign the Network Slice based on the Type of Service that the UE requires.
+It is important to make clear, the NSSF is not in charge of doing the Attach/Reattach procedure, it only passes the information received from **vBBU** to the **MME**, and once the UE is allowed to have connection will assign the Network Slice based on the Type of Service that the UE requires.
 
 ### Functionality during UE Attach/Reattach procedure
 The following Flow chart, shows the Attach/Reattach procedure of the NSSF
 
 ![ALT text](/Images/NSSF_Attach.png "Flowchart of the Network Slice Selection Function")
 
-1. The NSSF receives from RAN the UE connection information, in our scenario it is contained inside an **Object**, the 2 main attributes required by the NSSF are UE Id (In our Scenario is the IP of the machine) and the Type of service.
+1. The NSSF receives from **vBBU** the **UE** connection information, in our scenario it is contained inside an **Object**, the 2 main attributes required by the **NSSF** are **UE** Id (In our Scenario is the IP of the machine) and the Type of service.
 
 2. Once the NSSF has the UE information, it verifies with its local Connection Database, if the UE has already being served. (The local connection database will have the information of the UE as long as this one haven't disconnected from the network).
 
@@ -34,9 +34,9 @@ The following Flow chart, shows the Attach/Reattach procedure of the NSSF
    - **4.a** If there is no Network Slice that can serve the UE, the NSSF will trigger a request to ..... for creating a Connection that can serve the UE **(This is not implemented in our scenario)** *If for some reason we reach this stage in our scenario, the connection is interrupted*  
    - **4.b** When there is a Slice with the right Type of Service, the **NSSF** will firstly, register the **UEId** Inside the Network Slice Database and Register the **NSId** in the Local Connection Database, that way it is possible to know which **UE** is assigned to which **NS** while the connection is still active.
 
-5. Once we reach this step, we need to complete the connection information that is going to be contained inside the **MDDVector** which is an object similar to the one that we received from the **RAN** at the beginning of the flow, but with the addition of a **NSId** plus a **Temporary ID** that contains the **UEId** plus other Core Network information received from the **MME** during the attach procedure.
+5. Once we reach this step, we need to complete the connection information that is going to be contained inside the **MDDVector** which is an object similar to the one that we received from the **vBBU** at the beginning of the flow, but with the addition of a **NSId** plus a **Temporary ID** that contains the **UEId** plus other Core Network information received from the **MME** during the attach procedure.
 
-6. Once we have the **MDDVector** we will reply it to the **RAN** ending the Attach/Reattach Request Procedure.
+6. Once we have the **MDDVector** we will reply it to the **vBBU** ending the Attach/Reattach Request Procedure.
 
 ### Functionality During Detach
 
@@ -57,3 +57,12 @@ Steps on how to run the Code and the requirements that are needed for having a D
 ## Impact of the NSSF in our Mobile Network scenario
 
 Because the NSSF has a very specific role, the existence of this Function is mandatory if we want to have **E2E slicing** inside a Mobile Network, or any kind of Network that requires slicing. *Although is not possible to see right now*, the functionality of **NSSF** really comes into place, when the number of Slices that are created in a Network is High and there is a mechanism to provide Dynamic Network Slice Creation.
+
+## Glossary
+-**3gpp** The 3rd Generation Partnership Project
+-**E2E** End to End slicing
+-**MME** Mobile Management Entity
+-**MDDVector** Multi Dimensional Descriptor Vector
+-**NS** - **NSId** Network Slice, Network Slice Id
+-**NSSF** Network Slice Selection Function
+-**vBBU** Virtual Broadband Base Unit
