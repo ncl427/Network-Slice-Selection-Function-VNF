@@ -6,7 +6,7 @@ import pickle
 
 c = connect(host="127.0.0.1",port=10123)
 
-MDDVector = MDDVector(4,20)
+MDDVector = MDDVector(4,"117.17.102.21")
 pickledMDDVector = pickle.dumps(MDDVector)
 Authentication = pickle.loads(c.call.networkAttach(pickledMDDVector))
 # do something here ...

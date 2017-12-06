@@ -1,6 +1,6 @@
 from bjsonrpc.handlers import BaseHandler
 from bjsonrpc import createserver
-from NSSF import attach, dettach
+from NSSF import attach, detach
 import threading
 import time
 import pickle
