@@ -1,6 +1,6 @@
 # Network-Slice-Selection-Function---NSSF
 ## Introduction
-A Network Slice Selection Function is in charge of making the selection of an appropriate Network Slice in base of some parameters that a UE will send when it wants to attach to a Network. In the next sections the level of functionality achieved and the steps that are required for running this module will be described
+A Network Slice Selection Function is in charge of making the selection of an appropriate Network Slice in base of some parameters that a **UE** will send when it wants to attach to a Network. In the next sections the level of functionality achieved and the steps that are required for running this module will be described
 
 ## Description
 The **NSSF** is part of the 3gpp solution for having E2E slicing in a Mobile Network. According to documentation,
@@ -37,3 +37,18 @@ The following Flow chart, shows the Attach/Reattach procedure of the NSSF
 5. Once we reach this step, we need to complete the connection information that is going to be contained inside the **MDDVector** which is an object similar to the one that we received from the **RAN** at the beginning of the flow, but with the addition of a **NSId** plus a **Temporary ID** that contains the **UEId** plus other Core Network information received from the **MME** during the attach procedure.
 
 6. Once we have the **MDDVector** we will reply it to the **RAN** ending the Attach/Reattach Request Procedure.
+
+### Functionality During Detach
+
+When the Detach procedure is triggered, the NSSF will do Two tasks:
+1. It will update the Network Slice Database, removing the UEId that was assigned to the Network Slice. This way we clean the Slices that are being served.
+2. It will erase all the UE related information from the Local Connection Database. Effectively disconnecting the device from the network.
+
+##Code##
+
+The present GitHub repository has 3 directories for running the module:
+  - **bjsonrpc** Which contains all the functionality of the Remote Procedure Calls that allow communication between the modules. *This code is from an Open Source repository, it is a modified JSON RPC made by David Martínez Martí* you can follow the link here for more information about it: [Deavid Repo](https://github.com/deavid/bjsonrpc)
+  - **src** It is where the actual code of the NSSF reside
+  - **testScenario** As you may see, the NSSF is not a standalone function, and because it sits between the **vBBU** and the **MME** the functionality requires that every module that is part of the Mobile Network Scenario to be Running too. Nonetheless for having local tests of the module I provide some Attach and Detach clients that can be run in a single machine to illustrate the functionality of it.
+
+Steps on how to run the Code and the requirements that are needed for having a Deployment Environment are in the User Guide that you can access inside the **src** folder or in this [here]
