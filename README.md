@@ -20,4 +20,6 @@ The following Flow chart, shows the Attach/Reattach procedure of the NSSF
 
 1. The NSSF receives from RAN the UE connection information, in our scenario it is contained inside an <b>Object</b>, the 2 main attributes required by the NSSF are UE Id (In our Scenario is the IP of the machine) and the Type of service.
 
-2. Once the NSSF has the UE information, it verifies with its local Connection Database, if the UE has already being served. (The local connection database will have the information of the UE as long as this one haven't disconnected from the network)
+2. Once the NSSF has the UE information, it verifies with its local Connection Database, if the UE has already being served. (The local connection database will have the information of the UE as long as this one haven't disconnected from the network).
+
+  - 2.a From this point 2 things can happen. If the UE information is not in the local Database, it means that we are working in the Attach Procedure, for which we need to forward the UE connection information that we receive to the MME to handle the connection, after doing this, the MME will reply with updated connection information (Required for the TempId) or will not allow the connection (Based on its own policies)
