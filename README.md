@@ -59,10 +59,10 @@ Steps on how to run the Code and the requirements that are needed for having a D
 Because the NSSF has a very specific role, the existence of this Function is mandatory if we want to have **E2E slicing** inside a Mobile Network, or any kind of Network that requires slicing. *Although is not possible to see right now*, the functionality of **NSSF** really comes into place, when the number of Slices that are created in a Network is High and there is a mechanism to provide Dynamic Network Slice Creation.
 
 ## Glossary
--**3gpp** The 3rd Generation Partnership Project
--**E2E** End to End slicing
--**MME** Mobile Management Entity
--**MDDVector** Multi Dimensional Descriptor Vector
--**NS** - **NSId** Network Slice, Network Slice Id
--**NSSF** Network Slice Selection Function
--**vBBU** Virtual Broadband Base Unit
+- **3gpp** The 3rd Generation Partnership Project
+- **E2E** End to End slicing
+- **MME** Mobile Management Entity
+- **MDDVector** Multi Dimensional Descriptor Vector
+- **NS** - **NSId** Network Slice, Network Slice Id
+- **NSSF** Network Slice Selection Function
+- **vBBU** Virtual Broadband Base Unit
