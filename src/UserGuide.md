@@ -46,7 +46,7 @@ Which will install the required dependencies for working with `bJSON RPC`.
 
 ## How to Run
 
-Before we run our `NSSF Server` we need to initialize the **Data Base Server** in `Terminal` or `cmd` navigate to `Database/` folder and run the following:
+Before we run our `NSSF Server` we need to initialize the **Data Base Server**. In `Terminal` or `cmd` navigate to `Database/` folder and run the following:
 ```
 zeorun -C zeo.config
 ```
