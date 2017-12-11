@@ -16,3 +16,9 @@ After installing this dependencies and downloading/cloning the repository, navig
 ```
 python setup.py install
 ```
+Which will install the required dependencies for working with `bJSON RPC`.
+
+Next, proceed to [**How to Run Section**]()
+
+
+## How to Run
