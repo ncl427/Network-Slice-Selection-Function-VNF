@@ -45,3 +45,20 @@ python setup.py install
 Which will install the required dependencies for working with `bJSON RPC`.
 
 ## How to Run
+
+Before we run our `NSSF Server` we need to initialize the **Data Base Server** in `Terminal` or `cmd` navigate to `Database/` folder and run the following:
+```
+zeorun -C zeo.config
+```
+It will load the configuration for the local databases that are needed to store **connection** and **slice** information.
+
+Then, navigate to the `src/` folder and open the `NSSFServer.py` with a *tex editor* and modify the Ip address to match the IP of the machine where we are gonna run the *server* (This machine)
+
+After that, we need to open the `NSSF.py` file and modify the `vMMEIp` variable to match IP of the **vMME** machine
+
+When the IPs are updated run the file `NSSFServer.py`:
+```
+python NSSFServer.py
+```
+
+The server will be ready to listen to requests from the **vBBU**
