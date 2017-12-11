@@ -11,3 +11,8 @@ pip install ZEO
 ```
 
 If you get an error while installing `ZEO` you need to install `Microsoft Visual C++ Compiler for Python 2.7` from: [C++ Compiler](https://www.microsoft.com/en-us/download/details.aspx?id=44266).
+
+After installing this dependencies and downloading/cloning the repository, navigate to `bjsonrpc/` folder in your `cmd` and run the following command:
+```
+python setup.py install
+```
