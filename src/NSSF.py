@@ -12,6 +12,8 @@ from time import sleep
 from DataBase import DataBase
 from bjsonrpc import connect
 from bjsonrpc.handlers import BaseHandler
+from models.Mdd import Mdd
+from models.ueAttachObj import ueAttachObj
 import BTrees.OOBTree
 import transaction
 import random
@@ -88,10 +90,10 @@ def RecieveUEInfo(UESRoot, ConnInfo):
             count += 1
     if count > 0:
         print "Connection Resummed Proceeding to Select a Slice"
-        sleep(0.5)
+        #sleep(0.5)
     else:
         print "Sending Attach Request to MME"
-        sleep(0.5)
+        #sleep(0.5)
         #attachRequestMME(MDDVector.UEId,MDDVector.ServiceType)
         #Sends Attach Request to MME, Not Implemented
         RegisterUENSId(ConnInfo.UEId, ConnInfo.NSId, UESRoot) #Registers Local Database
@@ -104,7 +106,7 @@ def RegisterUENSId(UEId, NSId, UESRoot):
     UESRoot["UENS"+ str(UEId)] = [UEId, NSId]
     print "User Equipment Registration Is: ", UESRoot#["UENS"+ str(UEid)]
     transaction.commit()
-    sleep(0.5)
+    #sleep(0.5)
 
 #let_user_pick
 """Presents an Option List for selecting the type of services that are configure
@@ -136,7 +138,7 @@ def SliceVerification(MDDVector, Sliceroot, UESRoot):
             MDDVector.NSId = Sliceroot[key].NSId #Updates the Connection Object Information
             #print Sliceroot[key].UEId
             transaction.commit()
-            sleep(0.5)
+            #sleep(0.5)
             return True
     print "Service Type", MDDVector.ServiceType, "Not Found, Requesting Slice Creation"
     return False
@@ -146,11 +148,11 @@ def SliceVerification(MDDVector, Sliceroot, UESRoot):
 which Network Slice to connect"""
 def sendAuthInfo(UENService):
     print "Sent Connection Information to UE/vBBU"
-    sleep(0.5)
+    #sleep(0.5)
 
 """Removes the User Equipment ID from the local tables and the NS register"""
 def removeUE(UEID, NSTable, ConnTable):
-    sleep(0.5)
+    #sleep(0.5)
     print "Disconnecting User Equipment:", UEID
     for key in NSTable.keys():
         if UEID in NSTable[key].UEId:
@@ -171,15 +173,23 @@ def attachRequestMME(UEId,UENService):
     else:
         print "Connection Refused"
         quit()
+""" Creates the MDDVector with information from UE and Core NEtwork, it will be used
+to send back to the vBBU"""
+def createMDDVector(Object):
+    mddVector = Mdd()
+    mddVector.nesId = Object.NSId
+    mddVector.tempId = Object.UEId + str(Object.NSId) + "ASIF"
+    return mddVector
 
 """Main Function with the Flow of the Module"""
 def attach(ConnInfo):
 
-    MDDVector = pickle.loads(ConnInfo) #Parses the Object with Connection Info.
+    connObject = pickle.loads(ConnInfo) #Parses the Object with Connection Info.
+    ueInfo = MDDVector(connObject.serviceType, connObject.ip)
     Sliceroot = getSliceroot() #NS DB creation
     UESRoot = getUESRoot() #Local DB creation
     SliceInitialization(Sliceroot) #If no slice exists in DB, populate it with info
-    UENService = RecieveUEInfo(UESRoot, MDDVector) #Recives UE information
+    UENService = RecieveUEInfo(UESRoot, ueInfo) #Recives UE information
     if SliceVerification(UENService, Sliceroot, UESRoot): #Verifies Service Type with NS
         sendAuthInfo(UENService) #Finish the flow and sends info to UE
 
@@ -193,7 +203,9 @@ def attach(ConnInfo):
     print "User Equipment ", UENService.UEId, "with Slice Id ", UENService.NSId,
     print "is using Internet for ", UENService.ServiceType
 
-    return UENService
+
+    mddVector = createMDDVector(UENService)
+    return mddVector
 
 """Detach function, It will delete all user information from the connection tables"""
 def detach(ConnInfo):
@@ -208,7 +220,7 @@ def detach(ConnInfo):
 
         except:
             print "No UEId assigned"
-    sleep(0.5)
+    #sleep(0.5)
     print "Connection Table Info is: ", UESRoot
 
 
