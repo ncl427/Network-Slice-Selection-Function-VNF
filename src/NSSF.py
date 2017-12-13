@@ -5,24 +5,24 @@ User Equipment, Type of Service and other Subscriber Information"""
 #For object Database
 #Management
 from ZEO.ClientStorage import ClientStorage
-from NSlice import NSlice
-from MDDVector import MDDVector
 from ZODB import FileStorage, DB
 from time import sleep
 from DataBase import DataBase
 from bjsonrpc import connect
 from bjsonrpc.handlers import BaseHandler
+from bjsonrpc.exceptions import ServerError
 from models.Mdd import Mdd
+from models.NSlice import NSlice
+from models.netObject import netObject
 from models.ueAttachObj import ueAttachObj
-import BTrees.OOBTree
 import transaction
 import random
 import pickle
 
-
 """Define Functionality of NSSF, each of these functions represent a step
 of the Algorithm that was proposed"""
 
+vMMEIp = "192.168.0.170" #Change this to the IP to be used for your vMME in your scenario
 ServiceType = ['Video', 'SNS', 'IoT', 'Web', 'Messaging'] #Type of Services
 
 """Database creation"""
@@ -66,7 +66,7 @@ def SliceInitialization(Sliceroot):
 #RecieveUEInfo
 """Prompt for UE-ID request, then calls a Service selection function and
 registering UE in Local DataBase"""
-def RecieveUEInfo(UESRoot, ConnInfo):
+def RecieveUEInfo(UESRoot, ConnInfo, Sliceroot):
 #    while True: #Infinite Loop for catching incorrect input
 #        try:
 #            UEId = int(raw_input("Enter UE-ID: "))#This is just for this scenario
@@ -80,9 +80,9 @@ def RecieveUEInfo(UESRoot, ConnInfo):
 #    i = let_user_pick(ServiceType)#Calls a function for selecting Type of Service
     i = ConnInfo.ServiceType
     try:
-        UENService = MDDVector(ServiceType[i-1], ConnInfo.UEId)
+        UENService = netObject(ServiceType[i-1], ConnInfo.UEId)
     except:
-        UENService = MDDVector("NotFound", ConnInfo.UEId)
+        UENService = netObject("NotFound", ConnInfo.UEId)
     #Saves Type of Service and UE ID for later use
 
     for key in UESRoot.keys():
@@ -94,7 +94,10 @@ def RecieveUEInfo(UESRoot, ConnInfo):
     else:
         print "Sending Attach Request to MME"
         #sleep(0.5)
-        #attachRequestMME(MDDVector.UEId,MDDVector.ServiceType)
+        Auth = False
+        SliceInfo = SliceVerification(UENService, Sliceroot, UESRoot, Auth)
+        print SliceInfo.NSId
+        UENService.getCPId = attachRequestMME(ConnInfo.UEId, ConnInfo.ServiceType, SliceInfo)
         #Sends Attach Request to MME, Not Implemented
         RegisterUENSId(ConnInfo.UEId, ConnInfo.NSId, UESRoot) #Registers Local Database
     return UENService #Returns the Type of service to use it in Slice Verification
@@ -129,26 +132,23 @@ def let_user_pick(options):
 #SliceVerification
 """Checks if the required service can be provided by an Existing Network Slice,
 In case it does not exist, will request a Creation of IT to OpenStack/ONOS/XoS """
-def SliceVerification(MDDVector, Sliceroot, UESRoot):
+def SliceVerification(netObject, Sliceroot, UESRoot, Auth):
     for key in Sliceroot.keys():
-        if Sliceroot[key].ServiceType == MDDVector.ServiceType:
-            print "The UE is using the network for: ", Sliceroot[key].ServiceType
-            RegisterUENSId(MDDVector.UEId, Sliceroot[key].NSId, UESRoot) #Updates the UE,NS info in local Database
-            Sliceroot[key].getUEId(MDDVector.UEId) #Adds the UE to the Network Slice DB, (List of UE served)
-            MDDVector.NSId = Sliceroot[key].NSId #Updates the Connection Object Information
+        if Sliceroot[key].ServiceType == netObject.ServiceType and Auth == True:
+            print "The UE is requesting the use of the network for: ", Sliceroot[key].ServiceType
+            RegisterUENSId(netObject.UEId, Sliceroot[key].NSId, UESRoot) #Updates the UE,NS info in local Database
+            Sliceroot[key].getUEId(netObject.UEId) #Adds the UE to the Network Slice DB, (List of UE served)
+            netObject.NSId = Sliceroot[key].NSId #Updates the Connection Object Information
             #print Sliceroot[key].UEId
             transaction.commit()
             #sleep(0.5)
             return True
-    print "Service Type", MDDVector.ServiceType, "Not Found, Requesting Slice Creation"
+        if Sliceroot[key].ServiceType == netObject.ServiceType and Auth == False:
+            return Sliceroot[key]
+    print "Service Type", netObject.ServiceType, "Not Found, Requesting Slice Creation"
     return False
-    #requestSlice(Localtable[0])
 
-"""When the Flow ends, it Will send the Connection Information to UE, to let it know to
-which Network Slice to connect"""
-def sendAuthInfo(UENService):
-    print "Sent Connection Information to UE/vBBU"
-    #sleep(0.5)
+
 
 """Removes the User Equipment ID from the local tables and the NS register"""
 def removeUE(UEID, NSTable, ConnTable):
@@ -164,15 +164,22 @@ def removeUE(UEID, NSTable, ConnTable):
             transaction.commit()
 
 """Send Attach information to MME for network Authentication"""
-def attachRequestMME(UEId,UENService):
-    c = connect(host="192.168.0.170",port=10123)
-    response = c.call.auth(UEId)
-    if response == True:
-        "User Equipment Attacht Approved"
-        return True
-    else:
-        print "Connection Refused"
-        quit()
+def attachRequestMME(UEId, UENService, SliceInfo):
+    try:
+        c = connect(host=vMMEIp, port=10123).settimeout("wirte", 10)
+        print "Connecting....."
+        response = c.call.auth(UEId)
+        if response is not 0:
+            "User Equipment Attach Approved"
+            return response
+        else:
+            print "Connection Refused"
+            quit()
+    except ServerError:
+        print "Connection Timeout"
+
+
+
 """ Creates the MDDVector with information from UE and Core NEtwork, it will be used
 to send back to the vBBU"""
 def createMDDVector(Object):
@@ -185,26 +192,33 @@ def createMDDVector(Object):
 def attach(ConnInfo):
 
     connObject = pickle.loads(ConnInfo) #Parses the Object with Connection Info.
-    ueInfo = MDDVector(connObject.serviceType, connObject.ip)
+    ueInfo = netObject(connObject.serviceType, connObject.ip)
     Sliceroot = getSliceroot() #NS DB creation
     UESRoot = getUESRoot() #Local DB creation
     SliceInitialization(Sliceroot) #If no slice exists in DB, populate it with info
-    UENService = RecieveUEInfo(UESRoot, ueInfo) #Recives UE information
-    if SliceVerification(UENService, Sliceroot, UESRoot): #Verifies Service Type with NS
-        sendAuthInfo(UENService) #Finish the flow and sends info to UE
+    try:
+        UENService = RecieveUEInfo(UESRoot, ueInfo, Sliceroot) #Recives UE information
+        Auth = True
+    except Exception as e:
+        print "Connection Timeout"
+        print e
+        return e
 
-    for key in Sliceroot.keys():
-        print("{}: {}, Service: {}, UE:".format(key, Sliceroot[key],Sliceroot[key].ServiceType)),
-        try:
-            print Sliceroot[key].UEId
+    if SliceVerification(UENService, Sliceroot, UESRoot, Auth): #Verifies Service Type with NS
+        #sendAuthInfo(UENService) #Finish the flow and sends info to UE
+        for key in Sliceroot.keys():
+            print("{}: {}, Service: {}, UE:".format(key, Sliceroot[key],Sliceroot[key].ServiceType)),
+            try:
+                print Sliceroot[key].UEId
 
-        except:
-            print "No UEId assigned"
-    print "User Equipment ", UENService.UEId, "with Slice Id ", UENService.NSId,
-    print "is using Internet for ", UENService.ServiceType
-
+            except:
+                print "No UEId assigned"
+        print "User Equipment ", UENService.UEId, "with Slice Id ", UENService.NSId,
+        print "is using Internet for ", UENService.ServiceType
 
     mddVector = createMDDVector(UENService)
+    """When the Flow ends, it Will send the Connection Information to UE, to let it know to
+    which Network Slice to connect"""
     return mddVector
 
 """Detach function, It will delete all user information from the connection tables"""
@@ -212,7 +226,7 @@ def detach(ConnInfo):
     MDDVector = pickle.loads(ConnInfo) #Parses the Object with Connection Info.
     Sliceroot = getSliceroot() #Open Slice Database
     UESRoot = getUESRoot() #Open Connection Database
-    removeUE(MDDVector.UEId, Sliceroot, UESRoot)
+    removeUE(netObject.UEId, Sliceroot, UESRoot)
     for key in Sliceroot.keys():
         print("{}: {}, Service: {}, UE:".format(key, Sliceroot[key],Sliceroot[key].ServiceType)),
         try:

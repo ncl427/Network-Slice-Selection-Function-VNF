@@ -15,6 +15,7 @@ class NSlice(Persistent):
       if UEId not in self.UEId:
           self.UEId.append(UEId)
           self._p_changed = 1
+
   def remUE(self, UEId):
       self.UEId.remove(UEId)
       self._p_changed = 1
