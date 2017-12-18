@@ -22,7 +22,7 @@ import pickle
 """Define Functionality of NSSF, each of these functions represent a step
 of the Algorithm that was proposed"""
 
-vMMEIp = "192.168.0.170" #Change this to the IP to be used for your vMME in your scenario
+vMMEIp = "117.17.102.158" #Change this to the IP to be used for your vMME in your scenario
 ServiceType = ['Video', 'SNS', 'IoT', 'Web', 'Messaging'] #Type of Services
 
 """Database creation"""
@@ -97,7 +97,8 @@ def RecieveUEInfo(UESRoot, ConnInfo, Sliceroot):
         Auth = False
         SliceInfo = SliceVerification(UENService, Sliceroot, UESRoot, Auth)
         print SliceInfo.NSId
-        UENService.getCPId = attachRequestMME(ConnInfo.UEId, ConnInfo.ServiceType, SliceInfo)
+        #UENService.getCPId
+        attachRequestMME(ConnInfo.UEId, ConnInfo.ServiceType, SliceInfo)
         #Sends Attach Request to MME, Not Implemented
         RegisterUENSId(ConnInfo.UEId, ConnInfo.NSId, UESRoot) #Registers Local Database
     return UENService #Returns the Type of service to use it in Slice Verification
@@ -166,10 +167,10 @@ def removeUE(UEID, NSTable, ConnTable):
 """Send Attach information to MME for network Authentication"""
 def attachRequestMME(UEId, UENService, SliceInfo):
     try:
-        c = connect(host=vMMEIp, port=10123).settimeout("wirte", 10)
+        c = connect(host=vMMEIp, port=10123)
         print "Connecting....."
-        response = c.call.auth(UEId)
-        if response is not 0:
+        response = c.call.auth(SliceInfo.NSId)
+        if response is True:
             "User Equipment Attach Approved"
             return response
         else:
