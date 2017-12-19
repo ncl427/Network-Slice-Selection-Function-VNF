@@ -10,6 +10,7 @@ class NSlice(Persistent):
       self.NSId = NSId
       self.ServiceType = ServiceType
       self.UEId = []
+      self.CPId = ""
 
   def getUEId(self, UEId):
       if UEId not in self.UEId:

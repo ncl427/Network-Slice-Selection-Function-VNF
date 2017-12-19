@@ -84,7 +84,6 @@ def RecieveUEInfo(UESRoot, ConnInfo, Sliceroot):
     except:
         UENService = netObject("NotFound", ConnInfo.UEId)
     #Saves Type of Service and UE ID for later use
-
     for key in UESRoot.keys():
         if Bigio == key:
             count += 1
@@ -98,8 +97,9 @@ def RecieveUEInfo(UESRoot, ConnInfo, Sliceroot):
         SliceInfo = SliceVerification(UENService, Sliceroot, UESRoot, Auth)
         print SliceInfo.NSId
         #UENService.getCPId
-        attachRequestMME(ConnInfo.UEId, ConnInfo.ServiceType, SliceInfo)
+        cNIp = attachRequestMME(ConnInfo.UEId, ConnInfo.ServiceType, SliceInfo)
         #Sends Attach Request to MME, Not Implemented
+        UENService.getCPId(cNIp)
         RegisterUENSId(ConnInfo.UEId, ConnInfo.NSId, UESRoot) #Registers Local Database
     return UENService #Returns the Type of service to use it in Slice Verification
 
@@ -139,7 +139,10 @@ def SliceVerification(netObject, Sliceroot, UESRoot, Auth):
             print "The UE is requesting the use of the network for: ", Sliceroot[key].ServiceType
             RegisterUENSId(netObject.UEId, Sliceroot[key].NSId, UESRoot) #Updates the UE,NS info in local Database
             Sliceroot[key].getUEId(netObject.UEId) #Adds the UE to the Network Slice DB, (List of UE served)
+            if netObject.CPId is not "":
+                Sliceroot[key].getCPId(netObject.CPId)
             netObject.NSId = Sliceroot[key].NSId #Updates the Connection Object Information
+            netObject.CPId = Sliceroot[key].CPId
             #print Sliceroot[key].UEId
             transaction.commit()
             #sleep(0.5)
@@ -169,8 +172,8 @@ def attachRequestMME(UEId, UENService, SliceInfo):
     try:
         c = connect(host=vMMEIp, port=10123)
         print "Connecting....."
-        response = c.call.auth(SliceInfo.NSId)
-        if response is True:
+        response = c.call.auth(UEId, UENService, SliceInfo.NSId)
+        if response is not 0:
             "User Equipment Attach Approved"
             return response
         else:
@@ -186,7 +189,7 @@ to send back to the vBBU"""
 def createMDDVector(Object):
     mddVector = Mdd()
     mddVector.nesId = Object.NSId
-    mddVector.tempId = Object.UEId + str(Object.NSId) + "ASIF"
+    mddVector.tempId = Object.UEId +"|"+ str(Object.NSId) +"|"+ Object.CPId
     return mddVector
 
 """Main Function with the Flow of the Module"""
