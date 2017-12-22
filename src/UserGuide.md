@@ -35,12 +35,12 @@ sudo apt-get install python-pip
 ```
 Then we proceed to install the pip dependencies as following:
 ```
-pip install ZODB
-pip install ZEO
+sudo pip install ZODB
+sudo pip install ZEO
 ```
 After installing these dependencies and downloading/cloning the repository, navigate to `bjsonrpc/` folder in your `cmd` and run the following command:
 ```
-python setup.py install
+sudo python setup.py install
 ```
 Which will install the required dependencies for working with `bJSON RPC`.
 
@@ -48,7 +48,7 @@ Which will install the required dependencies for working with `bJSON RPC`.
 
 Before we run our `NSSF Server` we need to initialize the **Data Base Server**. In `Terminal` or `cmd` navigate to `Database/` folder and run the following:
 ```
-zeorun -C zeo.config
+runzeo -C zeo.config
 ```
 It will load the configuration for the local databases that are needed to store **connection** and **slice** information.
 
