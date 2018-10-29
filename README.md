@@ -1,4 +1,5 @@
 # Network Slice Selection Function NSSF
+# M-CORD Based
 ## Introduction
 A Network Slice Selection Function is in charge of making the selection of an appropriate Network Slice in base of some parameters that a **UE** will send when it wants to attach to a Network. In the next sections the level of functionality achieved and the steps that are required for running this module will be described
 
