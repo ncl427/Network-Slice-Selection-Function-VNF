@@ -47,6 +47,9 @@ Steps on how to run the Code and the requirements that are needed for having a D
 
 Because the NSSF has a very specific role, the existence of this Function is mandatory if we want to have **E2E slicing** inside a Mobile Network, or any kind of Network that requires slicing. The functionality of **NSSF** really comes into place, when the number of Slices that are created in a Network is High and there is a mechanism to provide Dynamic Network Slice Creation *M-CORD*.
 
+## Acknowledgment
+This research was supported by the MSIP (Ministry of Science, ICT and Future Planning), Korea, under the ITRC (Information Technology Research Center) support program (IITP-2017 2017-0-01633) supervised by the IITP (Institute for Information & communications Technology Promotion.
+
 ## Glossary
 - **3gpp** The 3rd Generation Partnership Project
 - **E2E** End to End slicing
